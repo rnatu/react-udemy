@@ -20,13 +20,37 @@ class App extends Component /* or React.Component */ {
         body: "O corpo 3",
       },
     ],
+    counter: 0,
+  };
+
+  componentDidMount() {
+    this.handleTimeOut();
+  }
+
+  componentDidUpdate() {
+    console.log("Componente atualizado");
+    this.handleTimeOut();
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.handleTimeOut);
+  }
+
+  handleTimeOut = () => {
+    const { posts, counter } = this.state;
+    posts[0].title = "Novo titulo";
+
+    setTimeout(() => {
+      this.setState({ posts, counter: counter + 1 });
+    }, 2000);
   };
 
   render() {
-    const { posts } = this.state;
+    const { posts, counter } = this.state;
 
     return (
       <div className="App">
+        <h1>{counter}</h1>
         {posts.map((post) => {
           return (
             <div key={post.id}>
