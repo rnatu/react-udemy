@@ -1,6 +1,6 @@
-import React from "react";
+import { Component } from "react";
 
-export class PostCard extends React.Component {
+export class PostCard extends Component {
   render() {
     const { cover, title, body } = this.props;
 
@@ -8,7 +8,7 @@ export class PostCard extends React.Component {
       <div className="post">
         <img src={cover} alt={title} />
         <div className="post-content">
-          <h1>{title}</h1>
+          <h2>{title}</h2>
           <p>{body}</p>
         </div>
       </div>
