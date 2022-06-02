@@ -17,3 +17,13 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+button {
+  transition: filter;
+}
+
+button:hover {
+  cursor: pointer;
+
+  filter: brightness(0.9);  
+}

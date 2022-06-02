@@ -1,5 +1,6 @@
 import { Component } from "react";
 import { PostCard } from "../PostCard";
+import "./styles.css";
 
 export class Posts extends Component {
   render() {
@@ -13,6 +14,7 @@ export class Posts extends Component {
             cover={post.cover}
             title={post.title}
             body={post.body}
+            id={post.id}
           />
         ))}
       </div>
