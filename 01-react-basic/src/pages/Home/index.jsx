@@ -10,7 +10,7 @@ export class Home extends Component /* or React.Component */ {
     posts: [],
     allPosts: [],
     page: 0,
-    postsPerPage: 53,
+    postsPerPage: 10,
     searchValue: "",
   };
 
@@ -55,12 +55,14 @@ export class Home extends Component /* or React.Component */ {
 
     return (
       <section className="container">
-        <h1>Search Value: {searchValue}</h1>
+        {searchValue && <h1>Search Value: {searchValue}</h1>}
         <input type="search" onChange={this.handleChange} value={searchValue} />
         <br /> <br />
         <Posts posts={posts} />
         <div className="button__container">
-          <Button onClick={this.loadMorePosts} disabled={noMorePosts} />
+          {!searchValue && (
+            <Button onClick={this.loadMorePosts} disabled={noMorePosts} />
+          )}
         </div>
       </section>
     );
