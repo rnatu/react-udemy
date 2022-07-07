@@ -11,6 +11,7 @@ export class Home extends Component /* or React.Component */ {
     allPosts: [],
     page: 0,
     postsPerPage: 53,
+    searchValue: "",
   };
 
   async componentDidMount() {
@@ -43,14 +44,21 @@ export class Home extends Component /* or React.Component */ {
     });
   };
 
+  handleChange = (event) => {
+    const { value } = event.target;
+    this.setState({ searchValue: value });
+  };
+
   render() {
-    const { posts, page, postsPerPage, allPosts } = this.state;
+    const { posts, page, postsPerPage, allPosts, searchValue } = this.state;
     const noMorePosts = page + postsPerPage >= allPosts.length;
 
     return (
       <section className="container">
+        <h1>Search Value: {searchValue}</h1>
+        <input type="search" onChange={this.handleChange} value={searchValue} />
+        <br /> <br />
         <Posts posts={posts} />
-
         <div className="button__container">
           <Button onClick={this.loadMorePosts} disabled={noMorePosts} />
         </div>
