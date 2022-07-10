@@ -66,6 +66,7 @@ export class Home extends Component /* or React.Component */ {
         <input type="search" onChange={this.handleChange} value={searchValue} />
         <br /> <br />
         <Posts posts={filteredPosts} />
+        {filteredPosts.length === 0 && <p>A busca não teve resultados :( </p>}
         <div className="button__container">
           {!searchValue && (
             <Button onClick={this.loadMorePosts} disabled={noMorePosts} />
