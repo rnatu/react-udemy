@@ -7,7 +7,7 @@ import { Button } from "../../components/Button";
 
 export class Home extends Component /* or React.Component */ {
   state = {
-    posts: [],
+    currentPostsOnPage: [],
     allPosts: [],
     page: 0,
     postsPerPage: 10,
@@ -23,13 +23,13 @@ export class Home extends Component /* or React.Component */ {
 
     const postAndPhotos = await loadPosts();
     this.setState({
-      posts: postAndPhotos.slice(page, postsPerPage),
+      currentPostsOnPage: postAndPhotos.slice(page, postsPerPage),
       allPosts: postAndPhotos,
     });
   };
 
   loadMorePosts = () => {
-    const { page, postsPerPage, allPosts, posts } = this.state;
+    const { page, postsPerPage, allPosts, currentPostsOnPage } = this.state;
     const nextPagePosts = page + postsPerPage;
     const nextPosts = allPosts.slice(
       nextPagePosts,
@@ -39,7 +39,7 @@ export class Home extends Component /* or React.Component */ {
     // console.log(nextPagePosts, nextPosts);
 
     this.setState({
-      posts: [...posts, ...nextPosts],
+      currentPostsOnPage: [...currentPostsOnPage, ...nextPosts],
       page: nextPagePosts,
     });
   };
@@ -50,15 +50,22 @@ export class Home extends Component /* or React.Component */ {
   };
 
   render() {
-    const { posts, page, postsPerPage, allPosts, searchValue } = this.state;
+    const { currentPostsOnPage, page, postsPerPage, allPosts, searchValue } =
+      this.state;
     const noMorePosts = page + postsPerPage >= allPosts.length;
+
+    const filteredPosts = !!searchValue
+      ? allPosts.filter((post) => {
+          return post.title.toLowerCase().includes(searchValue.toLowerCase());
+        })
+      : currentPostsOnPage;
 
     return (
       <section className="container">
         {searchValue && <h1>Search Value: {searchValue}</h1>}
         <input type="search" onChange={this.handleChange} value={searchValue} />
         <br /> <br />
-        <Posts posts={posts} />
+        <Posts posts={filteredPosts} />
         <div className="button__container">
           {!searchValue && (
             <Button onClick={this.loadMorePosts} disabled={noMorePosts} />
