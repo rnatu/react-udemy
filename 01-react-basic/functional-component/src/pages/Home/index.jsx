@@ -6,7 +6,7 @@ import { Button } from "../../components/Button";
 import { TextInput } from "../../components/TextInput";
 import { useState } from "react";
 
-export const Home = () => {
+export function Home() {
   const [currentPostsOnPage, setCurrentPostsOnPage] = useState([]);
   const [allPosts, setAllPosts] = useState([]);
   const [page, setPage] = useState(0);
@@ -70,4 +70,4 @@ export const Home = () => {
       </div>
     </section>
   );
-};
+}
