@@ -1,7 +1,7 @@
 import "./styles.css";
 import { Component } from "react";
 
-import { loadPosts } from "../../utils/loadPosts";
+import { fecthPosts } from "../../utils/fecthPosts";
 import { Posts } from "../../components/Posts";
 import { Button } from "../../components/Button";
 import { TextInput } from "../../components/TextInput";
@@ -22,7 +22,8 @@ export class Home extends Component /* or React.Component */ {
   loadPosts = async () => {
     const { page, postsPerPage } = this.state;
 
-    const postAndPhotos = await loadPosts();
+    const postAndPhotos = await fecthPosts();
+
     this.setState({
       currentPostsOnPage: postAndPhotos.slice(page, postsPerPage),
       allPosts: postAndPhotos,
