@@ -11,3 +11,13 @@
  display: flex;
  align-items: flex-end;
 }
+
+.search-container {
+  margin-bottom: 30px;
+}
+
+
+.notFoundSearch-container p {
+  text-align: center;
+  font-size: 1rem;
+}

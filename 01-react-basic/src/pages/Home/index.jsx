@@ -4,6 +4,7 @@ import { Component } from "react";
 import { loadPosts } from "../../utils/loadPosts";
 import { Posts } from "../../components/Posts";
 import { Button } from "../../components/Button";
+import { TextInput } from "../../components/TextInput";
 
 export class Home extends Component /* or React.Component */ {
   state = {
@@ -62,11 +63,19 @@ export class Home extends Component /* or React.Component */ {
 
     return (
       <section className="container">
-        {searchValue && <h1>Search Value: {searchValue}</h1>}
-        <input type="search" onChange={this.handleChange} value={searchValue} />
-        <br /> <br />
+        <div className="search-container">
+          <TextInput
+            searchValue={searchValue}
+            handleChange={this.handleChange}
+          />
+        </div>
+
+        <div className="notFoundSearch-container">
+          {filteredPosts.length === 0 && <p>A busca não teve resultados :( </p>}
+        </div>
+
         <Posts posts={filteredPosts} />
-        {filteredPosts.length === 0 && <p>A busca não teve resultados :( </p>}
+
         <div className="button__container">
           {!searchValue && (
             <Button onClick={this.loadMorePosts} disabled={noMorePosts} />
