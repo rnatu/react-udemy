@@ -1,87 +1,73 @@
 import "./styles.css";
-import { Component } from "react";
 
-import { loadPosts } from "../../utils/loadPosts";
+import { fecthPosts } from "../../utils/fecthPosts";
 import { Posts } from "../../components/Posts";
 import { Button } from "../../components/Button";
 import { TextInput } from "../../components/TextInput";
+import { useState } from "react";
 
-export class Home extends Component /* or React.Component */ {
-  state = {
-    currentPostsOnPage: [],
-    allPosts: [],
-    page: 0,
-    postsPerPage: 10,
-    searchValue: "",
+export const Home = () => {
+  const [currentPostsOnPage, setCurrentPostsOnPage] = useState([]);
+  const [allPosts, setAllPosts] = useState([]);
+  const [page, setPage] = useState(0);
+  const [searchValue, setSearchValue] = useState("");
+  const postsPerPage = 10;
+
+  const loadPosts = async () => {
+    const postAndPhotos = await fecthPosts();
+
+    setCurrentPostsOnPage(postAndPhotos.slice(page, postsPerPage));
+    setAllPosts(postAndPhotos);
   };
 
-  async componentDidMount() {
-    await this.loadPosts();
-  }
+  useState(() => {
+    (async function () {
+      await loadPosts();
+    })();
+  }, []);
 
-  loadPosts = async () => {
-    const { page, postsPerPage } = this.state;
-
-    const postAndPhotos = await loadPosts();
-    this.setState({
-      currentPostsOnPage: postAndPhotos.slice(page, postsPerPage),
-      allPosts: postAndPhotos,
-    });
-  };
-
-  loadMorePosts = () => {
-    const { page, postsPerPage, allPosts, currentPostsOnPage } = this.state;
+  const loadMorePosts = () => {
     const nextPagePosts = page + postsPerPage;
     const nextPosts = allPosts.slice(
       nextPagePosts,
       nextPagePosts + postsPerPage
     );
 
-    // console.log(nextPagePosts, nextPosts);
-
-    this.setState({
-      currentPostsOnPage: [...currentPostsOnPage, ...nextPosts],
-      page: nextPagePosts,
-    });
+    setCurrentPostsOnPage((oldState) => [...oldState, ...nextPosts]);
+    setPage(nextPagePosts);
   };
 
-  handleChange = (event) => {
+  const handleChange = (event) => {
     const { value } = event.target;
-    this.setState({ searchValue: value });
+
+    setSearchValue(value);
   };
 
-  render() {
-    const { currentPostsOnPage, page, postsPerPage, allPosts, searchValue } =
-      this.state;
-    const noMorePosts = page + postsPerPage >= allPosts.length;
+  const noMorePosts = page + postsPerPage >= allPosts.length;
 
-    const filteredPosts = !!searchValue
-      ? allPosts.filter((post) => {
-          return post.title.toLowerCase().includes(searchValue.toLowerCase());
-        })
-      : currentPostsOnPage;
+  const filteredPosts = !!searchValue
+    ? allPosts.filter((post) => {
+        return post.title.toLowerCase().includes(searchValue.toLowerCase());
+      })
+    : currentPostsOnPage;
 
-    return (
-      <section className="container">
-        <div className="search-container">
-          <TextInput
-            searchValue={searchValue}
-            handleChange={this.handleChange}
-          />
-        </div>
+  return (
+    <section className="container">
+      <div className="search-container">
+        <TextInput searchValue={searchValue} handleChange={handleChange} />
+      </div>
 
-        <div className="notFoundSearch-container">
-          {filteredPosts.length === 0 && <p>A busca não teve resultados :( </p>}
-        </div>
+      <div className="notFoundSearch-container">
+        {filteredPosts.length === 0 && <p>A busca não teve resultados :( </p>}
+      </div>
 
-        <Posts posts={filteredPosts} />
+      <Posts posts={filteredPosts} />
 
-        <div className="button__container">
-          {!searchValue && (
-            <Button onClick={this.loadMorePosts} disabled={noMorePosts} />
-          )}
-        </div>
-      </section>
-    );
-  }
-}
+      <div className="button__container">
+        {!searchValue && (
+          <Button onClick={loadMorePosts} disabled={noMorePosts} />
+        )}
+      </div>
+    </section>
+  );
+};
