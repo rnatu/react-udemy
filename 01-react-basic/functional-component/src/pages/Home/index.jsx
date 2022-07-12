@@ -1,10 +1,11 @@
 import "./styles.css";
 
-import { fecthPosts } from "../../utils/fecthPosts";
+import { fetchPosts } from "../../utils/fetchPosts";
 import { Posts } from "../../components/Posts";
 import { Button } from "../../components/Button";
 import { TextInput } from "../../components/TextInput";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useCallback } from "react";
 
 export function Home() {
   const [currentPostsOnPage, setCurrentPostsOnPage] = useState([]);
@@ -13,20 +14,24 @@ export function Home() {
   const [searchValue, setSearchValue] = useState("");
   const postsPerPage = 10;
 
-  const loadPosts = async () => {
-    const postAndPhotos = await fecthPosts();
+  const loadPosts = useCallback(async (postsPerPage) => {
+    const postAndPhotos = await fetchPosts();
 
-    setCurrentPostsOnPage(postAndPhotos.slice(page, postsPerPage));
+    setCurrentPostsOnPage(postAndPhotos.slice(0, postsPerPage));
     setAllPosts(postAndPhotos);
-  };
-
-  useState(() => {
-    (async function () {
-      await loadPosts();
-    })();
   }, []);
 
-  const loadMorePosts = () => {
+  useEffect(() => {
+    //   (async function () {
+    //     await loadPosts(postsPerPage);
+    //   })();
+    // }, [loadPosts, postsPerPage]);
+
+    //* Opção sem o await pois não será executado nada após a função loadPosts
+    loadPosts(postsPerPage);
+  }, [loadPosts, postsPerPage]);
+
+  const handleLoadMorePosts = () => {
     const nextPagePosts = page + postsPerPage;
     const nextPosts = allPosts.slice(
       nextPagePosts,
@@ -37,9 +42,8 @@ export function Home() {
     setPage(nextPagePosts);
   };
 
-  const handleChange = (event) => {
+  const handleSearchText = (event) => {
     const { value } = event.target;
-
     setSearchValue(value);
   };
 
@@ -54,7 +58,10 @@ export function Home() {
   return (
     <section className="container">
       <div className="search-container">
-        <TextInput searchValue={searchValue} handleChange={handleChange} />
+        <TextInput
+          searchValue={searchValue}
+          handleSearchText={handleSearchText}
+        />
       </div>
 
       <div className="notFoundSearch-container">
@@ -65,7 +72,7 @@ export function Home() {
 
       <div className="button__container">
         {!searchValue && (
-          <Button onClick={loadMorePosts} disabled={noMorePosts} />
+          <Button onClick={handleLoadMorePosts} disabled={noMorePosts} />
         )}
       </div>
     </section>
